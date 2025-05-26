@@ -1,11 +1,14 @@
+# openai_diet_api.py
+
 from flask import Flask, request, jsonify
 import openai
 import os
 
+# Initialize Flask app
 app = Flask(__name__)
 
-# Use environment variable for safety
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+# Load OpenAI key from environment
+client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route("/generate_diet", methods=["POST"])
 def generate_diet():
@@ -24,7 +27,7 @@ def generate_diet():
     )
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful nutritionist."},
@@ -33,8 +36,9 @@ def generate_diet():
             max_tokens=300,
             temperature=0.7
         )
-        result = response["choices"][0]["message"]["content"]
+        result = response.choices[0].message.content
         return jsonify({"diet_plan": result})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
