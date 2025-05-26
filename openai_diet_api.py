@@ -1,14 +1,11 @@
-# openai_diet_api.py
-
 from flask import Flask, request, jsonify
-import openai
+from openai import OpenAI
 import os
 
-# Initialize Flask app
 app = Flask(__name__)
 
-# Load OpenAI key from environment
-client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Use new OpenAI Client interface
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route("/generate_diet", methods=["POST"])
 def generate_diet():
@@ -43,4 +40,4 @@ def generate_diet():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=10000)
+    app.run(debug=True, host="0.0.0.0", port=10000)
